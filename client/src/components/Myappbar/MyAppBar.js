@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {AppBar, Toolbar, Typography, Button} from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import logo from '../../utils/main-logo-transparent.png'
 
 const MyAppBar = () => {
   const location = useLocation();
@@ -25,6 +26,7 @@ const MyAppBar = () => {
         <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
           <MenuIcon />
         </IconButton>
+        <img src={logo} alt={logo} height="120"  />
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           Shoe Store
         </Typography>

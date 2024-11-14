@@ -23,7 +23,7 @@ const ShoesList = () => {
     getShoes()
   }, []);
 
-  if (isLoading) return <CircularProgress marginTop='15px'/>;
+  if (isLoading) return <CircularProgress margintop='15px'/>;
   
   if (!shoes.length && !isLoading) return 
               <Typography variant='h3' 
