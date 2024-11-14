@@ -19,7 +19,7 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 // Middleware setup
 app.use(cors());
 app.use(express.json());
-app.use(morgan('dev')); // Optional: Log requests to the console
+app.use(morgan('dev')); // Log requests to the console
 
 // API Routes
 app.use('/api/admin', adminRoutes);

@@ -41,6 +41,13 @@ const User = {
     const [rows] = await pool.query('SELECT * FROM Users WHERE email = ?', [email]);
     return rows[0];
   },
+  
+  findByEmailOrUsername: async (identifier) => {
+    const [rows] = await pool.query('SELECT * FROM Users WHERE email = ? OR username = ?', 
+    [identifier, identifier]
+    );
+    return rows[0];
+  },
 
   findByPhoneNumber: async (phoneNumber) => {
     const [rows] = await pool.query('SELECT * FROM Users WHERE phoneNumber = ?', [phoneNumber]);

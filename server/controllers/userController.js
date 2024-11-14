@@ -50,10 +50,13 @@ exports.registerUser = async (req, res) => {
 // User login
 exports.loginUser = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { email, username, password } = req.body;
 
-    // Find user by username
-    const user = await User.findByUsername(username);
+    // Find user by username or email 
+    const identifier = email || username
+    
+    const user = await User.findByEmailOrUsername(identifier);
+ 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -76,12 +79,8 @@ exports.loginUser = async (req, res) => {
     // Generate JWT token
     const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
 
-    // Redirect based on user role
-    if (user.role === 'admin') {
-      return res.status(200).json({ message: 'Login successful', token, redirectUrl: '/admin.html' });
-    } else {
-      return res.status(200).json({ message: 'Login successful', token, redirectUrl: '/client.html' });
-    }
+      return res.status(200).json({ message: 'Login successful', token});
+ 
   } catch (error) {
     console.error('Error logging in user:', error);
     res.status(500).json({ message: error.message });

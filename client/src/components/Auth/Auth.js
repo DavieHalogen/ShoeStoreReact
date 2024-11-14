@@ -3,7 +3,7 @@ import { Avatar, Box, Button, Grid, Typography, Container } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
-import { signUp } from '../../api/apiService';
+import { signUp, signIn } from '../../api/apiService';
 import useStyles from './styles';
 import Input from './Input';
 
@@ -35,11 +35,19 @@ const handleSubmit = async (e) => {
         navigate('/');
       }
     } else {
-      // Handle sign-in
+      const response = await signIn(formData);
+       if (response && response.success) {
+         navigate('/')
+       }
     }
-  } catch (error) {
-    if (error.response && error.response.status === 409) {
+  } catch (response) {
+    if (response && response.status === 409) {
       setFormError('User already exists with this email or username');
+      
+    }else if(response && response.status === 403) {
+      setFormError('Your account is deactivated. Please contact support!');
+    }else if(response && response.status === 404) {
+      setFormError('User not found!');
     } else {
       setFormError('An error occurred. Please try again.');
     }
@@ -70,7 +78,7 @@ const handleSubmit = async (e) => {
             <Input name="password" label="Password" handleChange={handleChange} type={showPassword ? 'text' : 'password'} handleShowPassword={handleShowPassword} />
           </Grid>
           <br />
-         {isSignup && <> {formError && <Typography color="error">{formError}</Typography>}</>}
+          {formError && <Typography color="error">{formError}</Typography>}
           <br/>
           <Button type="submit"  fullWidth variant="contained" color="primary" className={classes.submit}>
             { isSignup ? 'Sign Up' : 'Sign In' }

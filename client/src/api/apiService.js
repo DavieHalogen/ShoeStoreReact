@@ -7,7 +7,16 @@ const api = axios.create({
   headers: {
          'Content-Type' : 'application/json',
   }
-})
+});
+
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+    return config;
+}, (error) => Promise.reject(error));
 
 
 export const fetchShoes = async () => {
@@ -41,16 +50,49 @@ export const signUp = async (formData) => {
     const response = await api.post('/users/signup', formData);
     
     if (response.status === 201) {
+      const { token } = response.data;
+      
+      localStorage.setItem('token', token);
+      
       return { success: true, message: 'Account created successfully!' };
-    }
+    } else if(response.status === 409) {
 
-    return { success: false, message: 'Unexpected error during registration' };
-    
-  } catch (error) {
-    if (error.response && error.response.status === 409) {
-      throw { response: { status: 409, data: 'Username or email already exists...' } };
+    return { message: 'Username or email already exists...' }
+   
     } else {
-      throw error;
+      const errorData = await response.json();
+            alert(errorData.message);
     }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const signIn = async (formData) => {
+  try {
+    const response = await api.post('/users/login', formData);
+     console.log(response)
+    if (response.status === 200) {
+      
+      const { token } = response.data;
+      
+      localStorage.setItem('token', token);
+      
+      return { success: true, message: 'Login successful.'};
+      
+    } else if(response.status === 404) {
+      
+      return { message: 'User not found' };
+      
+    } else if(response.status === 403) {
+      
+      return { message: 'Your account is deactivated. Please contact support.' }
+      
+    } else {
+      const errorData = await response.json();
+            alert(errorData.message);
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
