@@ -1,5 +1,7 @@
+import AdminPage from './Pages/AdminPage';
 import LoginPage from './Pages/LoginPage';
 import ClientPage from './Pages/ClientPage';
+import AdminRoutes from './components/Admin/AdminRoutes';
 import MyAppBar from './components/Myappbar/MyAppBar';
 import Footer from './components/Footer/Footer';
 import ResponsiveBackground from './components/Responsivebackground/ResponsiveBackground';
@@ -27,6 +29,11 @@ function App() {
                <Routes>
                  <Route path='/' element={<ClientPage />}/>
                  <Route path='/login' element={<LoginPage />}/>
+                 <Route element={<AdminRoutes />} >
+                   <Route 
+                      path='/admin' element={<AdminPage/> }
+                   />
+                 </Route>
                </Routes>
              <Footer />
            </ResponsiveBackground>

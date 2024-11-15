@@ -1,6 +1,6 @@
-import jwtDecode from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 
-export const getRoleFromToken = () => {
+const getRoleFromToken = () => {
   const token = localStorage.getItem('token');
   
   if (token) {
@@ -12,3 +12,6 @@ export const getRoleFromToken = () => {
     };
   return null;
 };
+}
+
+export default getRoleFromToken;

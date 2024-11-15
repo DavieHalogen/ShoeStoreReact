@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import { signUp, signIn } from '../../api/apiService';
+import getRoleFromToken from '../../utils/getRoleFromToken'
 import useStyles from './styles';
 import Input from './Input';
 
@@ -27,32 +28,27 @@ const SignUp = () => {
 const handleSubmit = async (e) => {
   e.preventDefault();
   setFormError('');
-  
+
   try {
+    let response;
+
     if (isSignup) {
-      const response = await signUp(formData);
+      response = await signUp(formData);
       if (response && response.success) {
         navigate('/');
       }
     } else {
-      const response = await signIn(formData);
-       if (response && response.success) {
-         navigate('/')
-       }
+      response = await signIn(formData);
+      if (response && response.success) {
+        const role = getRoleFromToken();
+        role === 'admin' ? navigate('/admin') : navigate('/');
+      }
     }
-  } catch (response) {
-    if (response && response.status === 409) {
-      setFormError('User already exists with this email or username');
-      
-    }else if(response && response.status === 403) {
-      setFormError('Your account is deactivated. Please contact support!');
-    }else if(response && response.status === 404) {
-      setFormError('User not found!');
-    } else {
-      setFormError('An error occurred. Please try again.');
-    }
+  } catch (error) {
+    setFormError(error.message || 'Something went wrong.');
   }
-};  
+};
+
 
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
