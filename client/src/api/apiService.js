@@ -11,10 +11,11 @@ const api = axios.create({
 
 // Add token to Authorization header if available
 api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+ (config) => {
+   const profile = localStorage.getItem('profile');
+   if (profile) {
+     const { token } = JSON.parse(profile);
+     config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
@@ -50,8 +51,8 @@ export const signUp = async (formData) => {
     const response = await api.post('/users/signup', formData);
 
     if (response.status === 201) {
-      const { token } = response.data;
-      localStorage.setItem('token', token);
+      const  data  = response.data.result;
+      localStorage.setItem('profile', JSON.stringify(data));
       return { success: true, message: 'Account created successfully!' };
     }
   } catch (error) {
@@ -68,8 +69,8 @@ export const signIn = async (formData) => {
   try {
     const response = await api.post('/users/login', formData);
     if (response.status === 200) {
-      const { token } = response.data;
-      localStorage.setItem('token', token);
+      const data  = response.data.result;
+      localStorage.setItem('profile', JSON.stringify(data));
       return { success: true, message: 'Login successful.' };
     }
   } catch (error) {
@@ -83,5 +84,35 @@ export const signIn = async (formData) => {
       }
     }
     throw new Error('Something went wrong.');
+  }
+};
+
+export const createAdmin = async (formData) => {
+  try {
+    const response = await api.post('/admin/create-admin', formData)
+    if (response.status === 201) {
+      return { success: true, message: 'Account created successfully!' };
+    }
+    
+  } catch (error) {
+   if (error.response) {
+     if (error.response.status === 409) {
+       throw new Error('Username or email already exists.');
+      }else if (error.response.status === 403) {
+        throw new Error('Access denied');
+      }
+    throw new Error('Something went wrong.');
+  }
+}
+};
+
+export const fetchDashboardMetrics = async () => {
+  
+  try {
+    const response = await api.get('/admin/dashboard');
+    console.log(response);
+    return response;
+  } catch (error) {
+    
   }
 };

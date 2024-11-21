@@ -37,10 +37,10 @@ exports.getRecentActivity = async () => {
 };
 
 // Function to log user activities
-exports.logActivity = async (userId, action) => {
+exports.logActivity = async (action) => {
     try {
-        const query = 'INSERT INTO ActivityLog (userId, action) VALUES (?, ?)';
-        await db.query(query, [userId, action]);
+        const query = 'INSERT INTO ActivityLog (action) VALUES (?)';
+        await db.query(query, [action]);
         console.log('Activity logged successfully.');
     } catch (error) {
         console.error('Error logging activity:', error.message);

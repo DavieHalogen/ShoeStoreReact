@@ -22,7 +22,7 @@ exports.registerUser = async (req, res) => {
 
    
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = {
+    const user = {
       username,
       email,
       password: hashedPassword,
@@ -32,15 +32,15 @@ exports.registerUser = async (req, res) => {
     };
 
     // Create new user in the database
-    const userId = await User.create(newUser);
+    const userId = await User.create(user);
     
     // Log the registration activity with the username
-    await logActivity(userId, `${username} registered successfully...`);
+    await logActivity(`${username} registered successfully...`);
 
     // Generate JWT token
-    const token = jwt.sign({ id: userId, role: newUser.role }, JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: userId, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
 
-    res.status(201).json({ message: 'User registered successfully', token });
+    res.status(201).json({ message: 'User registered successfully', result: {user, token }});
   } catch (error) {
     console.error('Error registering user:', error);
     res.status(500).json({ message: error.message });
@@ -69,17 +69,17 @@ exports.loginUser = async (req, res) => {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       // Log failed login attempt with the username
-      await logActivity(user.id, `Failed login attempt for user: ${username}`);
+      await logActivity(`Failed login attempt for user with email: ${identifier}`);
       return res.status(400).json({ message: 'Incorrect password' });
     }
 
     // Log successful login with the username
-    await logActivity(user.id, `${username} logged in successfully...`);
+    await logActivity(`User with email: ${identifier} logged in successfully...`);
 
     // Generate JWT token
     const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
 
-      return res.status(200).json({ message: 'Login successful', token});
+      return res.status(200).json({ message: 'Login successful', result: { user, token}});
  
   } catch (error) {
     console.error('Error logging in user:', error);
