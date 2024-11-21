@@ -41,7 +41,7 @@ const handleSubmit = async (e) => {
       response = await signIn(formData);
       if (response && response.success) {
         const role = getRoleFromToken();
-        role === 'admin' ? navigate('/admin') : navigate('/');
+        role === 'admin' ? navigate('/admin/dashboard') : navigate('/');
       }
     }
   } catch (error) {
@@ -65,8 +65,8 @@ const handleSubmit = async (e) => {
           <Grid container spacing={2}>
             { isSignup && (
             <>
-              <Input name="username" label="User Name" handleChange={handleChange} autoFocus half />
-              <Input name="phoneNumber" label="Phone Number" handleChange={handleChange} half/>
+              <Input name="username" label="User Name" handleChange={handleChange} autoFocus />
+              <Input name="phoneNumber" label="Phone Number" handleChange={handleChange}/>
             </>
             )}
             

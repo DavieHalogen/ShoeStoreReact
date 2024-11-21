@@ -1,10 +1,10 @@
 import {jwtDecode} from 'jwt-decode';
 
 const getRoleFromToken = () => {
-  const token = localStorage.getItem('token');
-  
-  if (token) {
+  const profile = localStorage.getItem('profile');
+  if (profile) {
     try {
+      const { token } = JSON.parse(profile);
       const decodedToken = jwtDecode(token);
         return decodedToken.role;
     } catch (error) {

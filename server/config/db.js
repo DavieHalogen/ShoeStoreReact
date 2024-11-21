@@ -81,10 +81,8 @@ const createActivityLogTable = async () => {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS ActivityLog (
         id INT AUTO_INCREMENT PRIMARY KEY,
-        userId INT NOT NULL,
         action VARCHAR(255) NOT NULL,
-        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (userId) REFERENCES Users(id)
+        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
     `);
     console.log('ActivityLog table is ready');
@@ -125,5 +123,4 @@ const getDashboardMetrics = async () => {
   }
 })();
 
-// Exporting the pool and getDashboardMetrics function
-module.exports = pool, getDashboardMetrics ; // Corrected export syntax
+module.exports = pool, getDashboardMetrics ; 

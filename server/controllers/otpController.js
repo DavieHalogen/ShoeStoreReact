@@ -1,18 +1,17 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
 const { authenticator } = require('otplib');
-const bcrypt = require('bcryptjs'); // Ensure bcryptjs is installed
+const bcrypt = require('bcryptjs'); 
 const pool = require('../config/db');
 
-const saltRounds = 10; // Adjust as needed
+const saltRounds = 12;
 
-// In-memory store for OTPs (use a database in production)
 const otpStore = {};
 
 
 exports.requestOtp= async (req, res) => {
     const { email } = req.body;
-    const otp = authenticator.generate(email); // Generate OTP using otplib
+    const otp = authenticator.generate(email); 
     otpStore[email] = otp;
 
     const transporter = nodemailer.createTransport({

@@ -1,43 +1,66 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import {AppBar, Toolbar, Typography, Button} from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+
+import {Typography, Button, Avatar} from '@mui/material';
 import logo from '../../utils/main-logo-transparent.png'
+import useStyles from './styles'
 
 const MyAppBar = () => {
+  const [user, setUser] = React.useState(JSON.parse(localStorage.getItem('profile')));
   const location = useLocation();
   const navigate = useNavigate();
+  const classes = useStyles();
   
-  const isHomePage = location.pathname === '/';
-  const buttonLabel = isHomePage ? 'Login' : 'Home';
-  const targetRoute = isHomePage ? '/login' : '/';
+  const logOut = () => {
+    localStorage.clear()
+    navigate('/')
+    setUser(null)
+  };
   
-  function handleButtonClick() {
-    navigate(targetRoute)
-  }
+  React.useEffect( () => {
+     const token = user?.token
+     
+      if (token) {
+        const decodedToken = jwtDecode(token);
+        if (decodedToken.exp * 1000 < new Date().getTime())
+          logOut();
+     }
+      
+      setUser(JSON.parse(localStorage.getItem('profile')));
+  }, [location])
+  
   
   return (
-    <AppBar position="static" color="primary" sx={{
-      height: 70,
-      
-    }} >
-      <Toolbar>
-        <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
-          <MenuIcon />
-        </IconButton>
-        <img src={logo} alt={logo} height="120"  />
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+    <nav className={classes.appBar} >
+  
+       
+        <img className={classes.image} src={logo} alt={logo} height="120"  />
+        <Typography className={classes.heading} variant="h5"  component="div" sx={{ flexGrow: 1 }}>
           Shoe Store
         </Typography>
-        <Button 
-            color="inherit"
-            onClick={handleButtonClick}
-        > 
-           {buttonLabel}
-        </Button>
-      </Toolbar>
-    </AppBar>
+       
+        
+        {user?.user ? (
+         <>
+            <Avatar className={classes.purple} alt={user?.user.username} src={user?.user.imageUrl}>{user?.user.username.charAt(0)}</Avatar>
+          <div className={classes.userName}>
+            <Typography  variant="h6">{user?.user.username}</Typography>
+          </div>
+          <div className={classes.button}>
+            <Button variant="contained"  color="secondary" onClick={logOut}>Logout</Button>
+          </div>
+          </>
+          ) : (
+          <div className={classes.button}>
+            <Button color='secondary' variant='contained' component={Link} to='/login'  className={classes.button} >
+                Login
+            </Button>
+          </div>
+            )
+        }
+        
+    </nav>
   );
 };
 
