@@ -1,8 +1,8 @@
 import React from "react";
-import { Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Typography, Checkbox, Button, Box, CircularProgress } from '@mui/material';
+import { Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Typography, Checkbox, Button, Box, CircularProgress, Alert } from '@mui/material';
 
 import useStyles from './styles';
-import { fetchUsers } from '../../../api/apiService';
+import { fetchUsers, deleteUser, switchUserStatus} from '../../../api/apiService';
 
 const UserTable = ({userUpdate}) => {
   const classes = useStyles();
@@ -10,6 +10,9 @@ const UserTable = ({userUpdate}) => {
   const [users, setUsers] = React.useState([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
+  const [alert, setAlert] = React.useState(false);
+  const [severity, setSeverity] = React.useState('')
+  const [response, setResponse] = React.useState('')
   
   const loadUsers = async () => {
     try {
@@ -24,16 +27,48 @@ const UserTable = ({userUpdate}) => {
    loadUsers()  
   } ,[userUpdate]);
   
-  const toggleUserStatus = () => {
-    
+  const toggleUserStatus = async (id, username, status, isActive) => {
+    try {
+      const response = await switchUserStatus(id);
+        if (response && response.success) {
+          setUsers((prevUsers) => 
+          prevUsers.map((user) => 
+          user.id === id ? {...user, status: isActive ? 'active' : 'inactive'} : user));
+      const newStatus = isActive ? 'active' : 'inactive';
+          setResponse(`${username}'s status changed to ${newStatus}`)
+          setSeverity('success');
+          handleAlert();
+        }
+    } catch (error) {
+      
+    }
   };
   
   const editUser = () => {
     
   };
   
-  const deleteUser = () => {
-    
+  const removeUser = async  (id, username) => {
+    try {
+     const response = await deleteUser(id);
+       if (response && response.success) {
+         setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+         setResponse(`${username} was  deleted successfully..`);
+         setSeverity('success');
+         handleAlert();
+       }
+    } catch (error) {
+     setResponse('User not deleted.Try again later.');
+     setSeverity('error');
+     handleAlert();
+    }
+  };
+  
+  const handleAlert = () => {
+    setAlert(true)
+    setTimeout(() => {
+      setAlert(false)
+    }, 6000);
   };
   
   if (isLoading) return <CircularProgress align='center'sx={{marginTop: '10px'}} />
@@ -42,6 +77,9 @@ const UserTable = ({userUpdate}) => {
   return (
     <Box className={classes.table}>
     <Typography variant="h6" align="center" sx={{ margin: 2, marginTop: '20px' }}>Users</Typography>
+    
+    {alert && <Alert sx={{border: 'none', margin: 0,}} variant='outlined' severity={severity} >{response}</Alert>}
+    
     <TableContainer  sx={{ marginTop: 2 }}>
       <Table>
         <TableHead>
@@ -79,7 +117,7 @@ const UserTable = ({userUpdate}) => {
                 <TableCell>
                   <Checkbox
                     checked={user.status === 'active'}
-                    onChange={(e) => toggleUserStatus(user.id, e.target.checked)}
+                    onChange={(e) => toggleUserStatus(user.id, user.username, user.status, e.target.checked)}
                     color="success"
                   />
                   <Typography
@@ -92,27 +130,30 @@ const UserTable = ({userUpdate}) => {
                     {user.status}
                   </Typography>
                 </TableCell>
-                <TableCell>
+                <TableCell  >
+                 <Box className={classes.action} >
                   <Button
                     variant="contained"
                     color="primary"
                     size="small"
+                    className={classes.actionButtons}
                     onClick={() => editUser(user.id)}
                     disabled={user.status === 'inactive'}
                     sx={{ marginRight: 1 }}
                   >
                     Edit
                   </Button>
-                  <br/>
                   <Button
                     variant="contained"
                     color="error"
                     size="small"
-                    onClick={() => deleteUser(user.id)}
+                    className={classes.actionButtons}
+                    onClick={() => removeUser(user.id, user.username)}
                     disabled={user.status === 'inactive'}
                   >
                     Delete
                   </Button>
+                 </Box>
                 </TableCell>
               </TableRow>
             ))

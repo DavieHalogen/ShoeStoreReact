@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation, useNavigate} from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
-import {Typography, Button, Avatar} from '@mui/material';
+import {Typography, Button, Avatar, Box} from '@mui/material';
 import logo from '../../utils/main-logo-transparent.png'
 import useStyles from './styles'
 
@@ -42,7 +42,7 @@ const MyAppBar = () => {
   
   
   return (
-    <nav className={classes.appBar} >
+    <Box className={classes.appBar} >
   
        
         <img className={classes.image} src={logo} alt={logo} height="120"  />
@@ -52,6 +52,7 @@ const MyAppBar = () => {
        
         
         {user?.user ? (
+        
          <>
             <Avatar className={classes.purple} alt={user?.user.username} src={user?.user.imageUrl}>{user?.user.username.charAt(0)}</Avatar>
           <div className={classes.userName}>
@@ -67,10 +68,11 @@ const MyAppBar = () => {
                 {buttonLabel}
             </Button>
           </div>
+        
             )
         }
         
-    </nav>
+    </Box>
   );
 };
 

@@ -9,4 +9,15 @@ export default makeStyles((theme) => ({
     marginTop: '20px',
   },
   
+  action: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    gap: 1,
+  },
+  
+  actionButtons: {
+  
+  },
+  
 }));

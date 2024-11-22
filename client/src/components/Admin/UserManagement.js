@@ -12,7 +12,6 @@ const UserManagement = () => {
   const [formData, setFormData] = React.useState({ username: '', phoneNumber: '', email: '', password: '' });
   
   const [formError, setFormError] = React.useState('');
-  const success = 'Admin created successfully';
   const [showSuccess, setShowSuccess] = React.useState(false);
   const [showForm, setShowForm] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
@@ -23,7 +22,7 @@ const UserManagement = () => {
     setShowSuccess(true)
     setTimeout(() => {
       setShowSuccess(false)
-    }, 10000);
+    }, 6000);
   };
   
   const handleShowForm = () => setShowForm(!showForm);
@@ -38,6 +37,7 @@ const UserManagement = () => {
     try {
       let response;
        response = await createAdmin(formData);
+       console.log(response);
        if (response && response.success) {
         handleSuccess();
         updatingUsers();
@@ -56,7 +56,7 @@ const UserManagement = () => {
     <Button onClick={handleShowForm} color='secondary' variant={showForm ? 'outlined' : 'contained'}  >
      <Typography variant='h5' >Create Admin</Typography>
     </Button>
-    {showSuccess && <><br/><Alert variant='outlined' severity='success' >{success}</Alert></>}
+    {showSuccess && <><br/><Alert sx={{border: 'none',margin:0,}} variant='outlined' severity='success' >Admin created successfully</Alert></>}
     { showForm &&
       <form className={classes.form} onSubmit={handleSubmit}>
         <Grid container spacing={2}>
