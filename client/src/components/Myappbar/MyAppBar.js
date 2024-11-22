@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useLocation, useNavigate} from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 
 import {Typography, Button, Avatar} from '@mui/material';
@@ -12,23 +12,33 @@ const MyAppBar = () => {
   const navigate = useNavigate();
   const classes = useStyles();
   
-  const logOut = () => {
+  const isHomepage = location.pathname === '/';
+  const buttonLabel = isHomepage ? 'Login' : 'Home';
+  const targetRoute = isHomepage ? '/login' : '/';
+  
+  const handleNavigate = () => {
+     navigate(targetRoute)
+  }
+  
+  const logOut = React.useCallback(() => {
     localStorage.clear()
     navigate('/')
     setUser(null)
-  };
+  }, [navigate]);
   
-  React.useEffect( () => {
-     const token = user?.token
-     
+  const tokenExpiry = React.useCallback(() => {
+    const token = user?.token
       if (token) {
         const decodedToken = jwtDecode(token);
         if (decodedToken.exp * 1000 < new Date().getTime())
           logOut();
      }
-      
       setUser(JSON.parse(localStorage.getItem('profile')));
-  }, [location])
+  }, [logOut, user?.token])
+  
+  React.useEffect( () => {
+    tokenExpiry();
+  }, [location, tokenExpiry])
   
   
   return (
@@ -53,8 +63,8 @@ const MyAppBar = () => {
           </>
           ) : (
           <div className={classes.button}>
-            <Button color='secondary' variant='contained' component={Link} to='/login'  className={classes.button} >
-                Login
+            <Button color='secondary' variant='contained' onClick={handleNavigate}  className={classes.button} >
+                {buttonLabel}
             </Button>
           </div>
             )
