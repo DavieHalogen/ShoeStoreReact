@@ -8,6 +8,7 @@ export default makeStyles((theme) => ({
     backgroundColor: theme.palette.primary.main,
     margin: 0,
     height: 70,
+    width: '100%',
   },
   heading: {
     color: theme.palette.secondary.main,
@@ -16,17 +17,20 @@ export default makeStyles((theme) => ({
     fontWeight: 500,
     textAlign: 'center',
     [theme.breakpoints.down('sm')]: {
- 
+      display: 'none',
     },
   },
   
+  image: {
+    marginRight: 'auto',
+  },
   
   userName: {
     marginInline: 10,
   },
   
   button: {
-    marginInline: 10,
+    marginRight: '7px',
   },
   
   purple: {

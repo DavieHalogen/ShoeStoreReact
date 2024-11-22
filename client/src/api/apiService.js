@@ -128,3 +128,29 @@ export const fetchUsers = async () => {
     throw error;
   }
 }
+
+export const deleteUser = async (id) => {
+  
+  try {
+    const response = await api.delete(`/admin/users/${id}`);
+    if (response.status === 200) {
+      return { success: true, message: 'User deleted successfully.' };
+    }
+  } catch (error) {
+    console.log('Error deleting user', error);
+    throw error;
+  }
+};
+
+export const switchUserStatus = async (id, isActive) => {
+  
+  try {
+     const response = await api.patch(`/admin/users/${id}/status`);
+     if (response.status === 200) {
+       return { success: true, message: 'User status updated.' }
+     }
+  } catch (error) {
+    console.log('Error updating user status.', error);
+    throw error;
+  }
+};
