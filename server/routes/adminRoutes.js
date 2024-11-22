@@ -13,7 +13,6 @@ const { authenticateJWT, isAdmin, checkUserStatus} = require('../middlewares/aut
 const router = express.Router();
 
 
-// User management routes (Admin only)
 router.post('/users', authenticateJWT, isAdmin, createUser);
 
 router.delete('/users/:id', authenticateJWT, isAdmin, checkUserStatus, deleteUser);
@@ -24,7 +23,6 @@ router.get('/users', authenticateJWT, isAdmin, checkUserStatus, getAllUsers);
 
 router.patch('/users/:id/status', authenticateJWT, isAdmin, checkUserStatus, toggleUserStatus);
 
-// Admin management route
 router.post('/create-admin', authenticateJWT, isAdmin, checkUserStatus, createAdmin);
 
 router.get('/dashboard', authenticateJWT, isAdmin, checkUserStatus, getDashboardData);

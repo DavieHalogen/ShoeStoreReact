@@ -87,6 +87,7 @@ export const signIn = async (formData) => {
   }
 };
 
+// Admin services
 export const createAdmin = async (formData) => {
   try {
     const response = await api.post('/admin/create-admin', formData)
@@ -110,9 +111,20 @@ export const fetchDashboardMetrics = async () => {
   
   try {
     const response = await api.get('/admin/dashboard');
-    console.log(response);
     return response;
   } catch (error) {
     
   }
 };
+
+export const fetchUsers = async () => {
+  
+  try {
+    const response = await api.get('/admin/users');
+    return response;
+    
+  } catch (error) {
+    console.log('Error fetching users:',error);
+    throw error;
+  }
+}
