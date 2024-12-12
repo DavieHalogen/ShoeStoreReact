@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
 import { signUp, signIn } from '../../api/apiService';
-import getRoleFromToken from '../../utils/getRoleFromToken'
+import getRoleFromToken from '../../utils/getRoleFromToken';
 import useStyles from './styles';
 import Input from './Input';
 

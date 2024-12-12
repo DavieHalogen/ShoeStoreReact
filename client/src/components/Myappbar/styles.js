@@ -34,7 +34,7 @@ export default makeStyles((theme) => ({
   },
   
   purple: {
-    
+    marginLeft: 4,
     color: theme.palette.secondary.main,
     backgroundColor: deepPurple,
   },

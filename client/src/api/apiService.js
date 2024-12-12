@@ -36,6 +36,14 @@ export const fetchShoes = async () => {
   }
 };
 
+export const addShoe = async (formData) => {
+  try {
+    const response = await api.post('/shoes', formData);
+  } catch (error) {
+    
+  }
+};
+
 export const fetchBackgroundImages = async () => {
   try {
     const response = await api.get('/backgroundImages');
@@ -152,5 +160,18 @@ export const switchUserStatus = async (id, isActive) => {
   } catch (error) {
     console.log('Error updating user status.', error);
     throw error;
+  }
+};
+
+export const editUser = async (id, formData) => {
+  
+  try {
+    const response = await api.put(`/admin/users/${id}`, formData);
+    if (response.status === 200) {
+      return { success: true, message: 'User updated successfully.'}
+    }
+  } catch (error) {
+     console.log('Error updating user.', error);
+     throw error;
   }
 };

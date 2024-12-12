@@ -12,9 +12,10 @@ exports.getShoes = async (req, res) => {
 
 // Create a new shoe
 exports.createShoe = async (req, res) => {
+  console.log(req.body);
     const { name, price } = req.body;
     const image = req.file ? req.file.filename : null; // Get the uploaded file name
-
+   console.log(image);
     if (!image) {
         return res.status(400).json({ message: 'Image is required' });
     }

@@ -1,8 +1,9 @@
 import React from 'react';
 import { useLocation, useNavigate} from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
-
 import {Typography, Button, Avatar, Box} from '@mui/material';
+
+import getRoleFromToken from '../../utils/getRoleFromToken';
 import logo from '../../utils/main-logo-transparent.png'
 import useStyles from './styles'
 
@@ -11,14 +12,22 @@ const MyAppBar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const classes = useStyles();
+  const role = getRoleFromToken();
   
   const isHomepage = location.pathname === '/';
   const buttonLabel = isHomepage ? 'Login' : 'Home';
   const targetRoute = isHomepage ? '/login' : '/';
+  const adminTargetRoute = isHomepage ? '/admin/dashboard' : '/';
+  const adminButtonLabel = isHomepage ? 'Admin' : 'Home';
+  const isAdmin = role === 'admin';
   
   const handleNavigate = () => {
      navigate(targetRoute)
-  }
+  };
+  
+  const handleAdminNavigate = () => {
+     navigate(adminTargetRoute)
+  };
   
   const logOut = React.useCallback(() => {
     localStorage.clear()
@@ -49,6 +58,8 @@ const MyAppBar = () => {
         <Typography className={classes.heading} variant="h5"  component="div" sx={{ flexGrow: 1 }}>
           Shoe Store
         </Typography>
+        
+        {isAdmin && <Button variant="contained" color="secondary" onClick={handleAdminNavigate}>{adminButtonLabel}</Button> }
        
         
         {user?.user ? (

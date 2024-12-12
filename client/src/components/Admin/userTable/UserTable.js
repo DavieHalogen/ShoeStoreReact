@@ -1,7 +1,9 @@
 import React from "react";
+import moment from 'moment';
 import { Table, TableContainer, TableBody, TableCell, TableHead, TableRow, Typography, Checkbox, Button, Box, CircularProgress, Alert } from '@mui/material';
 
 import useStyles from './styles';
+import EditUserModal from '../EditUser/EditUserModal';
 import { fetchUsers, deleteUser, switchUserStatus} from '../../../api/apiService';
 
 const UserTable = ({userUpdate}) => {
@@ -11,21 +13,23 @@ const UserTable = ({userUpdate}) => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
   const [alert, setAlert] = React.useState(false);
-  const [severity, setSeverity] = React.useState('')
-  const [response, setResponse] = React.useState('')
+  const [severity, setSeverity] = React.useState('');
+  const [response, setResponse] = React.useState('');
+  const [editUser, setEditUser] = React.useState(null);
+  const [isOpen, setIsOpen] = React.useState(false);
   
-  const loadUsers = async () => {
+ const loadUsers = React.useCallback(async () => {
     try {
       const {data} = await fetchUsers();
       setUsers(data);
     } catch (error) {
       setError(true)
-    } finally {setIsLoading(false)};
-  };
+    } finally {setIsLoading(false)}
+  }, []);
   
   React.useEffect(() => {
    loadUsers()  
-  } ,[userUpdate]);
+  } ,[userUpdate, loadUsers]);
   
   const toggleUserStatus = async (id, username, status, isActive) => {
     try {
@@ -44,8 +48,21 @@ const UserTable = ({userUpdate}) => {
     }
   };
   
-  const editUser = () => {
-    
+  const handleEditClick = (user) => {
+    setEditUser(user);
+    setIsOpen(true);
+  };
+  
+  const cancelEditUser = () => {
+    setEditUser(null);
+    setIsOpen(false);
+  };
+  
+  const handleEditUserSuccess = (id) => {
+    loadUsers();
+    setResponse(`User with id ${id} updated successfully.`);
+    setSeverity('success');
+    handleAlert();
   };
   
   const removeUser = async  (id, username) => {
@@ -75,6 +92,7 @@ const UserTable = ({userUpdate}) => {
   if (error) return <Typography color='error'>Error fetching users:{error}</Typography>
   
   return (
+  <>
     <Box className={classes.table}>
     <Typography variant="h6" align="center" sx={{ margin: 2, marginTop: '20px' }}>Users</Typography>
     
@@ -111,8 +129,7 @@ const UserTable = ({userUpdate}) => {
                 <TableCell>{user.role}</TableCell>
                 <TableCell>
                   {user.registrationDate
-                    ? new Date(user.registrationDate).toLocaleDateString()
-                    : 'N/A'}
+                    ? moment(user.registrationDate).format('MMMM Do YYYY, h:mm:ss A') : 'N/A'}
                 </TableCell>
                 <TableCell>
                   <Checkbox
@@ -137,7 +154,7 @@ const UserTable = ({userUpdate}) => {
                     color="primary"
                     size="small"
                     className={classes.actionButtons}
-                    onClick={() => editUser(user.id)}
+                    onClick={() => handleEditClick(user)}
                     disabled={user.status === 'inactive'}
                     sx={{ marginRight: 1 }}
                   >
@@ -162,5 +179,12 @@ const UserTable = ({userUpdate}) => {
       </Table>
     </TableContainer>
     </Box>
+    { editUser && (<EditUserModal 
+        user={editUser}
+        handleClose={cancelEditUser}
+        open={isOpen}
+        onSuccess={handleEditUserSuccess}
+    />)};
+  </>
 )};
 export default UserTable;
