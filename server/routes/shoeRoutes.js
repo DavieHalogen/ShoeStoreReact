@@ -11,7 +11,7 @@ const {
 // Set up storage for multer
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'backend/images'); // Ensure this directory exists for storing images
+        cb(null, 'server/images/shoes'); // Ensure this directory exists for storing images
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + '-' + file.originalname); // Create a unique filename

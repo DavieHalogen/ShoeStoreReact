@@ -35,9 +35,7 @@ const UserManagement = () => {
     e.preventDefault();
     setFormError('')
     try {
-      let response;
-       response = await createAdmin(formData);
-       console.log(response);
+       const response = await createAdmin(formData);
        if (response && response.success) {
         handleSuccess();
         updatingUsers();
